@@ -88,7 +88,19 @@ export async function sendSmsMobileApi({ apiKey, phoneNumber, message, sendWa = 
       body: params.toString(),
     });
 
-    const data = await response.json();
+    const contentType = response.headers.get('content-type') || '';
+    let data = null;
+    if (contentType.includes('application/json')) {
+      data = await response.json();
+    } else {
+      const rawText = await response.text();
+      try {
+        data = JSON.parse(rawText);
+      } catch (e) {
+        throw new Error(`Server returned non-JSON response (${response.status}): ${rawText.slice(0, 80)}`);
+      }
+    }
+
     const isSuccess = data?.result?.error === 0 && (data?.result?.sent === '1' || data?.result?.sent === 1);
 
     return {
@@ -138,7 +150,19 @@ export async function sendFast2SmsLive({ apiKey, phoneNumber, message }) {
       }),
     });
 
-    const data = await response.json();
+    const contentType = response.headers.get('content-type') || '';
+    let data = null;
+    if (contentType.includes('application/json')) {
+      data = await response.json();
+    } else {
+      const rawText = await response.text();
+      try {
+        data = JSON.parse(rawText);
+      } catch (e) {
+        throw new Error(`Server returned non-JSON response (${response.status}): ${rawText.slice(0, 80)}`);
+      }
+    }
+
     return {
       success: data.return === true || data.status_code === 200,
       statusCode: data.status_code,

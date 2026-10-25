@@ -1,0 +1,117 @@
+@import "leaflet/dist/leaflet.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Space Mono', monospace;
+    color: #09090b;
+    background: linear-gradient(135deg, #fce5ee 0%, #fae8f0 20%, #ede8f5 55%, #fce7f3 85%, #f6e0f8 100%);
+    min-height: 100vh;
+  }
+}
+
+/* Chamfered Cut-Corner Badges (Directly from reference design) */
+.chamfer-badge {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+}
+
+.chamfer-badge-sm {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+}
+
+.chamfer-badge-tl {
+  clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%, 0 14px);
+}
+
+/* 4-Point Starburst (✦) */
+.starburst-shape {
+  clip-path: polygon(
+    50% 0%, 55% 40%, 100% 50%, 55% 60%,
+    50% 100%, 45% 60%, 0% 50%, 45% 40%
+  );
+}
+
+/* Monospace Neo-Brutalist Card Borders */
+.neo-card {
+  background-color: #ffffff;
+  border: 1.5px solid #09090b;
+  box-shadow: 4px 4px 0px #09090b;
+  transition: all 0.15s ease-in-out;
+}
+
+.neo-card-sm {
+  background-color: #ffffff;
+  border: 1.5px solid #09090b;
+  box-shadow: 2.5px 2.5px 0px #09090b;
+}
+
+.neo-btn {
+  border: 1.5px solid #09090b;
+  box-shadow: 2.5px 2.5px 0px #09090b;
+  transition: all 0.1s ease-in-out;
+}
+
+.neo-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3.5px 3.5px 0px #09090b;
+}
+
+.neo-btn:active {
+  transform: translate(1.5px, 1.5px);
+  box-shadow: 0px 0px 0px #09090b;
+}
+
+/* Custom scrollbar for clean editorial tables */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #fdf2f8;
+  border-left: 1px solid #e2e8f0;
+}
+::-webkit-scrollbar-thumb {
+  background: #09090b;
+  border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Leaflet Map styling overrides for neo-brutalist map */
+.leaflet-container {
+  font-family: 'Space Mono', monospace !important;
+  z-index: 10;
+  border-radius: 1rem;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 0.5rem;
+  box-shadow: 4px 4px 0px #09090b;
+  border: 1.5px solid #09090b;
+  background: #ffffff;
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px;
+  line-height: 1.4;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+}
+
+.leaflet-popup-tip {
+  background: #09090b;
+}
+
+/* Reset default divIcon background and border */
+.custom-leaflet-marker,
+.custom-leaflet-school {
+  background: transparent !important;
+  border: none !important;
+}

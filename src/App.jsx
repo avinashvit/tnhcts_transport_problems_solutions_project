@@ -74,11 +74,13 @@ function AppContent() {
                     }`}
                   >
                     {latestSmsNotification.type === 'irregular_behavior'
-                      ? 'EMERGENCY SMS • TN-GOVT-EDU'
-                      : 'LIVE SMS • TN-GOVT-EDU'}
+                      ? 'EMERGENCY TELEMETRY • POLICE 112 & CABIN SIREN'
+                      : 'LIVE PARENT SMS • TN-GOVT-EDU'}
                   </span>
                   <span className="text-[10px] text-slate-300 font-mono">
-                    To: +91 {latestSmsNotification.phone || currentUser?.phone || '98421 78901'}
+                    {latestSmsNotification.type === 'irregular_behavior'
+                      ? 'To: Police ERSS (112) & Depot Command'
+                      : `To: +91 ${latestSmsNotification.phone || currentUser?.phone || '98421 78901'}`}
                   </span>
                   <span className="text-[10px] text-slate-400 font-bold ml-auto">
                     {latestSmsNotification.time}
@@ -94,7 +96,11 @@ function AppContent() {
                       : 'text-emerald-400'
                   }`}
                 >
-                  <span>✓✓ Cellular SMS Dispatched to Parent Phone via SMSMobileAPI</span>
+                  <span>
+                    {latestSmsNotification.type === 'irregular_behavior'
+                      ? '✓✓ MoRTH AIS-140 Alert Broadcasted to Police PCR (112) & Driver Cabin Siren Activated'
+                      : '✓✓ Cellular SMS Dispatched to Parent Phone via SMSMobileAPI'}
+                  </span>
                 </div>
               </div>
             </div>

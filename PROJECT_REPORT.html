@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Report - Smart Digital Transit & Attendance Safety Monitoring System</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    :root {
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --border: #cbd5e1;
+      --text: #1e293b;
+      --muted: #64748b;
+      --bg-light: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Merriweather', serif;
+      color: var(--text);
+      line-height: 1.7;
+      background-color: #e2e8f0;
+      padding: 20px 0;
+    }
+
+    /* Print & Screen Toolbar */
+    .toolbar {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      gap: 10px;
+      background: white;
+      padding: 8px 14px;
+      border-radius: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      border: 1px solid var(--border);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .toolbar button {
+      background: #0f172a;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .toolbar button:hover {
+      background: #2563eb;
+    }
+
+    /* A4 Page Container */
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 25mm 22mm 25mm 22mm;
+      margin: 15px auto;
+      background: white;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      position: relative;
+      font-size: 11pt;
+    }
+
+    /* Cover Page Styling */
+    .cover-page {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      min-height: 297mm;
+    }
+
+    .cover-header {
+      font-family: 'Inter', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .cover-header h2 {
+      font-size: 15pt;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+
+    .cover-header h3 {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+
+    .cover-header p {
+      font-size: 10.5pt;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .vit-emblem-box {
+      margin: 25px 0;
+      width: 130px;
+      height: 130px;
+      border: 2px solid #0f172a;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #f8fafc;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+
+    .vit-emblem-box span.logo-title {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: 26pt;
+      color: #1e3a8a;
+      letter-spacing: 2px;
+    }
+
+    .vit-emblem-box span.logo-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 6.5pt;
+      font-weight: 700;
+      text-align: center;
+      color: #475569;
+      padding: 0 10px;
+      text-transform: uppercase;
+    }
+
+    .project-title-box {
+      margin: 20px 0;
+      padding: 18px;
+      border-top: 2px solid #0f172a;
+      border-bottom: 2px solid #0f172a;
+      width: 100%;
+    }
+
+    .project-title-box h1 {
+      font-family: 'Inter', sans-serif;
+      font-size: 15pt;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    .project-title-box p.title-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+      color: #475569;
+      margin-top: 6px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .submission-grid {
+      width: 100%;
+      margin: 20px 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .submission-section-title {
+      font-size: 10.5pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #0f172a;
+      margin-bottom: 10px;
+      letter-spacing: 0.8px;
+    }
+
+    .team-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 25px;
+      font-size: 9.5pt;
+    }
+
+    .team-table th {
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      font-weight: 700;
+      text-align: left;
+    }
+
+    .team-table td {
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .guide-box {
+      font-family: 'Inter', sans-serif;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .guide-box p.label {
+      font-size: 10pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .guide-box p.name {
+      font-size: 12pt;
+      font-weight: 700;
+      color: #1e3a8a;
+    }
+
+    .guide-box p.dept {
+      font-size: 9pt;
+      color: #64748b;
+    }
+
+    /* Headings & Typography */
+    h1.section-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 16pt;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 6px;
+      margin-bottom: 18px;
+      margin-top: 10px;
+    }
+
+    h2.sub-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 12pt;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin: 18px 0 8px 0;
+    }
+
+    h3.sub-sub-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 12px 0 6px 0;
+    }
+
+    p {
+      text-align: justify;
+      margin-bottom: 12px;
+      font-size: 10.5pt;
+    }
+
+    ul, ol {
+      margin-left: 22px;
+      margin-bottom: 14px;
+      font-size: 10.5pt;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* Table of Contents */
+    .toc-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .toc-table th {
+      background: #0f172a;
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 10pt;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .toc-table td {
+      padding: 9px 14px;
+      border-bottom: 1px dashed var(--border);
+      font-size: 10pt;
+    }
+
+    .toc-table tr:hover td {
+      background: #f8fafc;
+    }
+
+    .toc-page-col {
+      text-align: right;
+      font-weight: 700;
+      color: #1e3a8a;
+    }
+
+    /* Generic Tables */
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+    }
+
+    .content-table th {
+      background: #0f172a;
+      color: white;
+      padding: 9px 10px;
+      text-align: left;
+      font-weight: 700;
+      border: 1px solid #0f172a;
+    }
+
+    .content-table td {
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .content-table tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    /* Diagram / Flowchart Styling */
+    .flowchart-container {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 18px 0;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .flowchart-title {
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    /* Highlight Cards / Badges */
+    .callout {
+      background: #f0fdf4;
+      border-left: 4px solid #16a34a;
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+      font-size: 10pt;
+    }
+
+    .callout-alert {
+      background: #fef2f2;
+      border-left: 4px solid #dc2626;
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+      font-size: 10pt;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8pt;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: #e2e8f0;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+    }
+
+    /* Footer / Page Number */
+    .page-footer {
+      position: absolute;
+      bottom: 14mm;
+      left: 22mm;
+      right: 22mm;
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 8pt;
+      color: var(--muted);
+    }
+
+    /* Print Break Logic */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .toolbar {
+        display: none;
+      }
+      .page {
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Print Toolbar -->
+  <div class="toolbar">
+    <button onclick="window.print()">
+      🖨️ Print / Save as PDF
+    </button>
+  </div>
+
+  <!-- ================= PAGE 1: COVER PAGE ================= -->
+  <div class="page cover-page">
+    <div class="cover-header">
+      <h2>Fall Semester 2026 - 2027</h2>
+      <h3>Introduction to Innovative Projects</h3>
+      <p>Course Code: PHY1901 &bull; Slot: TB1</p>
+    </div>
+
+    <!-- Official Style VIT Seal -->
+    <div class="vit-emblem-box">
+      <span class="logo-title">VIT</span>
+      <span class="logo-sub">Vellore Institute of Technology</span>
+    </div>
+
+    <!-- Project Title Box -->
+    <div class="project-title-box">
+      <p class="title-sub">TITLE OF INNOVATIVE PROJECT:</p>
+      <h1>Smart Digital Transit & Attendance Safety Monitoring System for Government School Commuters</h1>
+      <p class="title-sub">Zero-Phone Commute &bull; AIS-140 Physical Panic Telemetry &bull; Real-Time Cellular SMS Alerts</p>
+    </div>
+
+    <!-- Submission Details -->
+    <div class="submission-grid">
+      <div class="submission-section-title">Submitted By:</div>
+      <table class="team-table">
+        <thead>
+          <tr>
+            <th style="width: 10%;">S.No</th>
+            <th style="width: 55%;">Student Name</th>
+            <th style="width: 35%;">Registration No.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1.</td>
+            <td><strong>Avinash M.</strong></td>
+            <td><strong>23BCE1042</strong></td>
+          </tr>
+          <tr>
+            <td>2.</td>
+            <td>Kavya S.</td>
+            <td>23BCE1189</td>
+          </tr>
+          <tr>
+            <td>3.</td>
+            <td>Praveen Kumar R.</td>
+            <td>23BCE1245</td>
+          </tr>
+          <tr>
+            <td>4.</td>
+            <td>Naveen Chandran T.</td>
+            <td>23MIS0182</td>
+          </tr>
+          <tr>
+            <td>5.</td>
+            <td>Sanjay Vignesh K.</td>
+            <td>23BCE1408</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Guide Details -->
+      <div class="guide-box">
+        <p class="label">Submitted To:</p>
+        <p class="name">Prof. Dr. S. K. MEENAKSHI SUNDARAM</p>
+        <p class="dept">School of Computer Science & Engineering (SCOPE) &bull; VIT</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 2: TABLE OF CONTENTS ================= -->
+  <div class="page">
+    <h1 class="section-title">Table of Contents</h1>
+
+    <table class="toc-table">
+      <thead>
+        <tr>
+          <th>Topic / Section Title</th>
+          <th class="toc-page-col">Page No.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Abstract</strong></td>
+          <td class="toc-page-col">3</td>
+        </tr>
+        <tr>
+          <td><strong>2. Motivation Behind the Project</strong></td>
+          <td class="toc-page-col">3</td>
+        </tr>
+        <tr>
+          <td><strong>3. Project Objectives</strong> (Primary & Functional Goals)</td>
+          <td class="toc-page-col">4</td>
+        </tr>
+        <tr>
+          <td><strong>4. Introduction & Societal Problem Statement</strong></td>
+          <td class="toc-page-col">4</td>
+        </tr>
+        <tr>
+          <td><strong>5. Zero-Phone Architecture & Tamil Nadu Policy Context</strong> (G.O. Ms. No. 42)</td>
+          <td class="toc-page-col">5</td>
+        </tr>
+        <tr>
+          <td><strong>6. System Architecture & Work Plan</strong> (Timeline Schedule)</td>
+          <td class="toc-page-col">6</td>
+        </tr>
+        <tr>
+          <td><strong>7. System Flowchart & Operational Sequence</strong></td>
+          <td class="toc-page-col">7</td>
+        </tr>
+        <tr>
+          <td><strong>8. On-Bus Physical Panic Button Hardware (MoRTH AIS-140)</strong></td>
+          <td class="toc-page-col">8</td>
+        </tr>
+        <tr>
+          <td><strong>9. Design Prototype & Core System Modules</strong></td>
+          <td class="toc-page-col">9</td>
+        </tr>
+        <tr>
+          <td><strong>10. Automated Boarded vs Missed Classification Logic</strong></td>
+          <td class="toc-page-col">10</td>
+        </tr>
+        <tr>
+          <td><strong>11. Team Contribution & Task Allocation Matrix</strong></td>
+          <td class="toc-page-col">11</td>
+        </tr>
+        <tr>
+          <td><strong>12. Conclusion & Future Enhancements</strong></td>
+          <td class="toc-page-col">11</td>
+        </tr>
+        <tr>
+          <td><strong>13. Academic & Technical References</strong></td>
+          <td class="toc-page-col">12</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout" style="margin-top: 40px;">
+      <strong>Project Overview Note:</strong> This project addresses the safety, attendance integrity, and real-time transit tracking for rural and suburban government school students traveling under the Tamil Nadu 100% Free Commuter Bus Scheme. Designed explicitly for students without smartphones, utilizing printed laminated passes and on-bus AIS-140 emergency hardware.
+    </div>
+
+    <div class="page-footer">
+      <span>VIT Innovative Projects &bull; PHY1901</span>
+      <span>Page 2</span>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 3: ABSTRACT & MOTIVATION ================= -->
+  <div class="page">
+    <h1 class="section-title">1. Abstract</h1>
+    <p>
+      In rural and semi-urban regions across India, particularly in states like Tamil Nadu, millions of underprivileged students depend exclusively on state-run transport undertakings (such as the Tamil Nadu State Transport Corporation - TNSTC) to reach government secondary and higher secondary schools. Under <strong>Government Order G.O. Ms. No. 42</strong>, students in uniform or carrying bus passes travel free of cost. However, severe infrastructural bottlenecks persist: school feeder buses operate without live telematics, scheduled stops are often bypassed due to highway congestion, and parents at home have zero real-time visibility into whether their children boarded the bus or reached the school campus safely.
+    </p>
+    <p>
+      Crucially, <strong>government school regulations strictly forbid smartphones</strong>, and the overwhelming majority of students from socio-economically disadvantaged families do not own personal mobile devices. Existing private school transit systems rely heavily on expensive student tracking apps or proprietary RFID kiosks, which are entirely non-viable for public transport infrastructure.
+    </p>
+    <p>
+      To solve this critical societal challenge, we engineered the <strong>Smart Digital Transit & Attendance Safety Monitoring Platform</strong>. The system operates on a novel <strong>Zero-Phone Architecture</strong>: students carry durable, printed, laminated physical passes embedded with tamper-resistant QR tokens. Bus conductors and drivers utilize an ultra-low-latency in-browser scanning loop (jsQR) on ordinary mobile devices to log boarding in milliseconds. Boarding verification immediately triggers real-time cellular SMS notifications to parents' keypad or feature phones via the <strong>SMSMobileAPI</strong> telecom gateway.
+    </p>
+    <p>
+      Furthermore, the system integrates a <strong>MoRTH AIS-140 compliant On-Bus Physical Panic Button telemetry simulation</strong>, empowering students without phones to report rash driving, route deviations, or harassment through wall-mounted physical buttons that alert the TNSTC Depot Command Center and parents simultaneously. Upon reaching the school gate, the platform executes an automated classification algorithm that sends safe arrival confirmations to parents of boarded students while dispatching urgent <em>"Bus Missed / Unboarded"</em> alerts to parents whose children were absent at the stop.
+    </p>
+
+    <h1 class="section-title" style="margin-top: 25px;">2. Motivation Behind the Project</h1>
+    <p>
+      The core motivation behind this engineering project stems from real-world field reports in rural corridors (such as Dharmapuri, Krishnagiri, and Villupuram districts), where students frequently encounter skipped bus stops, long halts at railway crossings, and severe overcrowding leading to footboard accidents.
+    </p>
+    <p>
+      Working-class parents often work in agricultural fields or daily-wage labor and cannot accompany their children to the bus stop every morning. A delayed bus or an unverified boarding leads to immense parental anxiety and school absenteeism. By engineering an automated bridge that converts driver actions into direct cellular SMS messages—without requiring any smartphone, data pack, or app installation from the child—we provide dignity, safety, and operational transparency to public education transit.
+    </p>
+
+    <div class="page-footer">
+      <span>VIT Innovative Projects &bull; PHY1901</span>
+      <span>Page 3</span>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 4: OBJECTIVES & INTRODUCTION ================= -->
+  <div class="page">
+    <h1 class="section-title">3. Project Objectives</h1>
+    <p>
+      The primary objective of this project is to develop an inclusive, zero-cost-barrier transit safety and attendance management framework tailored specifically for government schools and state transport corporations:
+    </p>
+    <ul>
+      <li><strong>Objective 1 (Zero-Phone Student Commute):</strong> Design and validate a laminated physical digital bus pass system utilizing encrypted 2D QR matrix codes, completely eliminating the need for students to carry smartphones.</li>
+      <li><strong>Objective 2 (Continuous Camera Stream Telemetry):</strong> Implement a resilient, non-blocking webcam QR scanning engine (jsQR) with frame throttling and instant re-scan capabilities on the driver's console to mark attendance at highway speeds.</li>
+      <li><strong>Objective 3 (Direct Cellular DLT SMS Dispatch):</strong> Establish cloud-to-telecom gateway dispatch through SMSMobileAPI and Fast2SMS fallback, sending transactional SMS to parent mobile numbers without requiring mobile internet on the parent's phone.</li>
+      <li><strong>Objective 4 (MoRTH AIS-140 Physical Panic Alert):</strong> Simulate and integrate physical emergency SOS buttons on bus pillars, enabling in-transit students to trigger instant alarms to the depot and parent mobile phones.</li>
+      <li><strong>Objective 5 (Automated Cohort Segregation upon School Arrival):</strong> Formulate an automated classification algorithm that verifies boarded commuters upon trip completion, sending safe arrival drop-off notifications to boarded students and immediate "Bus Missed" alerts to unboarded students.</li>
+      <li><strong>Objective 6 (Statewide Administrative Oversight):</strong> Build a centralized live radar map using Leaflet GIS and an Admin Grievance Redressal console to monitor bus speeds, route progress, and commuter counts in real time.</li>
+    </ul>
+
+    <h1 class="section-title" style="margin-top: 20px;">4. Introduction & Societal Problem Statement</h1>
+    <p>
+      Public bus transport forms the lifeblood of rural education in India. Under state welfare schemes, students are entitled to 100% free bus travel. While this policy dramatically boosted school enrollment rates across rural Tamil Nadu, operating conditions present severe systemic challenges:
+    </p>
+    <div class="callout-alert">
+      <strong>The Real-World Bottleneck:</strong>
+      1. <em>Overcrowding & Skipped Stops:</em> Overloaded buses frequently bypass intermediate village halts, leaving young students stranded.<br>
+      2. <em>Zero Transit Visibility:</em> Parents have no tracking mechanism to ascertain whether their child boarded the morning bus.<br>
+      3. <em>The Digital Divide Paradox:</em> High-end private school apps require parents and students to possess 5G smartphones and data subscriptions. A rural government school solution must function flawlessly with zero student mobile phones and basic 2G SMS connectivity.
+    </div>
+
+    <div class="page-footer">
+      <span>VIT Innovative Projects &bull; PHY1901</span>
+      <span>Page 4</span>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 5: ZERO-PHONE ARCHITECTURE ================= -->
+  <div class="page">
+    <h1 class="section-title">5. Zero-Phone Architecture & Policy Context</h1>
+    <p>
+      Tamil Nadu <strong>Government Order G.O. Ms. No. 42</strong> mandates unconditional free travel for government school students. However, verifying bona fide student status has traditionally relied on paper cards or school uniforms, causing friction between conductors and students over pass authenticity.
+    </p>
+    
+    <h2 class="sub-title">5.1 The Zero-Phone Commute Principle</h2>
+    <p>
+      Our platform strictly abides by school mobile phone prohibition policies through a distributed architecture:
+    </p>
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>Stakeholder</th>
+          <th>Hardware Utilized</th>
+          <th>Operating Responsibility</th>
+          <th>Network Requirement</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Student Commuter</strong></td>
+          <td>Physical Laminated QR Pass (Smart ID)</td>
+          <td>Presents card to driver at bus step; presses wall SOS button in danger.</td>
+          <td><strong>Zero Network / Zero Battery</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Bus Driver / Conductor</strong></td>
+          <td>Ordinary Android Smartphone / Handheld Console</td>
+          <td>Scans pass with rear camera; starts trips; advances route stops.</td>
+          <td>4G/LTE cellular or offline cache</td>
+        </tr>
+        <tr>
+          <td><strong>Parent / Guardian</strong></td>
+          <td>Any Mobile Phone (Keypad / Feature / Smartphone)</td>
+          <td>Receives instant cellular SMS notifications; optional map tracking.</td>
+          <td>Standard GSM cellular network</td>
+        </tr>
+        <tr>
+          <td><strong>Depot Manager / Admin</strong></td>
+          <td>Desktop / Tablet Browser Console</td>
+          <td>Monitors live vehicle radar, crowd density, and student grievances.</td>
+          <td>Broadband / Cloud connectivity</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="sub-title">5.2 Data Encoding of Student Pass Payload</h2>
+    <p>
+      The student bus pass encodes an encrypted JSON token generated via standard Reed-Solomon Error Correction QR algorithms:
+    </p>
+    <div style="background: #0f172a; color: #86efac; padding: 12px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 8.5pt;">
+      {<br>
+      &nbsp;&nbsp;"id": "EMIS-7957",<br>
+      &nbsp;&nbsp;"name": "Prem",<br>
+      &nbsp;&nbsp;"busId": "BUS-14A",<br>
+      &nbsp;&nbsp;"stop": "Morappur Bus Stand",<br>
+      &nbsp;&nbsp;"phone": "7305940480",<br>
+      &nbsp;&nbsp;"type": "TNSTC_STUDENT_PASS",<br>
+      &nbsp;&nbsp;"valid": "2026-2027"<br>
+      }
+    </div>
+
+    <div class="page-footer">
+      <span>VIT Innovative Projects &bull; PHY1901</span>
+      <span>Page 5</span>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 6: WORK PLAN & GANTT SCHEDULE ================= -->
+  <div class="page">
+    <h1 class="section-title">6. Work Plan & Milestone Schedule</h1>
+    <p>
+      The development lifecycle spanned an intensive 14-week engineering schedule, divided into six structured operational phases:
+    </p>
+
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>Phase</th>
+          <th>Weeks</th>
+          <th>Work Package / Milestones</th>
+          <th>Deliverables & Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Phase 1: Problem Definition & Survey</strong></td>
+          <td>W1 - W2</td>
+          <td>Field survey of rural school bus routes; analysis of G.O. Ms. No. 42; review of MoRTH AIS-140 panic button guidelines.</td>
+          <td>Requirement Analysis Document (100% Completed)</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 2: Architectural Design</strong></td>
+          <td>W3 - W5</td>
+          <td>Zero-phone commute model formulation; QR pass encryption schema; telecom SMS gateway evaluation (SMSMobileAPI vs Fast2SMS).</td>
+          <td>System Architecture & DLT Schemas (100% Completed)</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 3: Front-End & Scanning Core</strong></td>
+          <td>W6 - W8</td>
+          <td>Neo-Brutalist UI design system in Tailwind CSS; jsQR camera loop implementation; continuous stream lock bug fix.</td>
+          <td>Driver & Parent Portals (100% Completed)</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 4: Telemetry & Gateway Integration</strong></td>
+          <td>W9 - W10</td>
+          <td>Vercel Serverless Functions for cloud SMS dispatch; CORS elimination; live Leaflet GPS fleet tracker.</td>
+          <td>Serverless SMS Cloud Proxy (100% Completed)</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 5: Classification & Emergency Module</strong></td>
+          <td>W11 - W12</td>
+          <td>Automated boarded vs unboarded student arrival logic; AIS-140 on-bus physical panic button simulator with driver alarm.</td>
+          <td>Emergency & Arrival Modules (100% Completed)</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 6: Testing & Vercel Cloud Deployment</strong></td>
+          <td>W13 - W14</td>
+          <td>Real cellular SIM verification tests (+91 73059 40480); mobile camera field tests; production deployment on Vercel.</td>
+          <td>Live Production Web App (100% Completed)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="flowchart-container" style="margin-top: 25px;">
+      <div class="flowchart-title">Figure 6.1: High-Level Engineering Work Plan Timeline</div>
+      <svg viewBox="0 0 700 130" width="100%" height="110">
+        <!-- Milestone Bars -->
+        <rect x="10" y="30" width="100" height="28" rx="5" fill="#3b82f6" />
+        <text x="60" y="48" fill="white" font-size="9" font-weight="bold" text-anchor="middle">Phase 1 (W1-2)</text>
+        
+        <rect x="120" y="30" width="110" height="28" rx="5" fill="#6366f1" />
+        <text x="175" y="48" fill="white" font-size="9" font-weight="bold" text-anchor="middle">Phase 2 (W3-5)</text>
+
+        <rect x="240" y="30" width="110" height="28" rx="5" fill="#8b5cf6" />
+        <text x="295" y="48" fill="white" font-size="9" font-weight="bold" text-anchor="middle">Phase 3 (W6-8)</text>
+
+        <rect x="360" y="30" width="110" height="28" rx="5" fill="#ec4899" />
+        <text x="415" y="48" fill="white" font-size="9" font-weight="bold" text-anchor="middle">Phase 4 (W9-10)</text>
+
+        <rect x="480" y="30" width="110" height="28" rx="5" fill="#f59e0b" />
+        <text x="535" y="48" fill="white" font-size="9" font-weight="bold" text-anchor="middle">Phase 5 (W11-12)</text>
+
+        <rect x="600" y="30" width="90" height="28" rx="5" fill="#10b981" />
+        <text x="645" y="48" fill="white" font-size="9" font-weight="bold" text-anchor="middle">Phase 6 (W13-14)</text>
+
+        <!-- Timeline Axis -->
+        <line x1="10" y1="85" x2="690" y2="85" stroke="#94a3b8" stroke-width="2" />
+        <circle cx="10" cy="85" r="4" fill="#0f172a" />
+        <circle cx="120" cy="85" r="4" fill="#0f172a" />
+        <circle cx="240" cy="85" r="4" fill="#0f172a" />
+        <circle cx="360" cy="85" r="4" fill="#0f172a" />
+        <circle cx="480" cy="85" r="4" fill="#0f172a" />
+        <circle cx="600" cy="85" r="4" fill="#0f172a" />
+        <circle cx="690" cy="85" r="4" fill="#10b981" />
+
+        <text x="10" y="105" font-size="8" fill="#64748b">Research</text>
+        <text x="175" y="105" font-size="8" fill="#64748b" text-anchor="middle">Architecture</text>
+        <text x="295" y="105" font-size="8" fill="#64748b" text-anchor="middle">UI & Scanner</text>
+        <text x="415" y="105" font-size="8" fill="#64748b" text-anchor="middle">Vercel Proxy</text>
+        <text x="535" y="105" font-size="8" fill="#64748b" text-anchor="middle">Arrival Logic</text>
+        <text x="645" y="105" font-size="8" fill="#64748b" text-anchor="middle">Vercel Live</text>
+      </svg>
+    </div>
+
+    <div class="page-footer">
+      <span>VIT Innovative Projects &bull; PHY1901</span>
+      <span>Page 6</span>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 7: SYSTEM FLOWCHART ================= -->
+  <div class="page">
+    <h1 class="section-title">7. System Flowchart & Operational Sequence</h1>
+    <p>
+      The complete transit lifecycle encompasses commuter boarding, in-transit telemetry tracking, emergency panic detection, and destination classification:
+    </p>
+
+    <div class="flowchart-container">
+      <div class="flowchart-title">Figure 7.1: End-to-End System Operational Flowchart</div>
+      <svg viewBox="0 0 650 480" width="100%" height="440">
+        <!-- Node 1: Start -->
+        <rect x="250" y="10" width="150" height="32" rx="16" fill="#0f172a" />
+        <text x="325" y="30" fill="white" font-size="10" font-weight="bold" text-anchor="middle">Start Feeder Trip</text>
+
+        <line x1="325" y1="42" x2="325" y2="60" stroke="#0f172a" stroke-width="2" marker-end="url(#arrow)" />
+
+        <!-- Node 2: Halt at Pickup Stop -->
+        <rect x="240" y="60" width="170" height="36" rx="6" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.5" />
+        <text x="325" y="82" fill="#0f172a" font-size="9.5" font-weight="bold" text-anchor="middle">Bus Halts at Designated Stop</text>
+
+        <line x1="325" y1="96" x2="325" y2="115" stroke="#0f172a" stroke-width="2" />
+
+        <!-- Node 3: Decision: QR Scanned? -->
+        <polygon points="325,115 425,145 325,175 225,145" fill="#fef3c7" stroke="#d97706" stroke-width="1.5" />
+        <text x="325" y="148" fill="#92400e" font-size="9" font-weight="bold" text-anchor="middle">Student Presents Pass?</text>
+
+        <!-- YES Branch (Boarded) -->
+        <line x1="425" y1="145" x2="520" y2="145" stroke="#16a34a" stroke-width="2" />
+        <text x="470" y="138" fill="#16a34a" font-size="8.5" font-weight="bold">YES (Valid QR)</text>
+        <line x1="520" y1="145" x2="520" y2="190" stroke="#16a34a" stroke-width="2" />
+
+        <rect x="440" y="190" width="160" height="42" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5" />
+        <text x="520" y="208" fill="#166534" font-size="8.5" font-weight="bold" text-anchor="middle">Mark Student Boarded</text>
+        <text x="520" y="222" fill="#166534" font-size="7.5" text-anchor="middle">Send Boarding Cellular SMS</text>
+
+        <!-- NO Branch (Not Boarded) -->
+        <line x1="225" y1="145" x2="130" y2="145" stroke="#dc2626" stroke-width="2" />
+        <text x="175" y="138" fill="#dc2626" font-size="8.5" font-weight="bold">NO (Absent)</text>
+        <line x1="130" y1="145" x2="130" y2="190" stroke="#dc2626" stroke-width="2" />
+
+        <rect x="50" y="190" width="160" height="42" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5" />
+        <text x="130" y="208" fill="#991b1b" font-size="8.5" font-weight="bold" text-anchor="middle">Flag Waiting / Unboarded</text>
+        <text x="130" y="222" fill="#991b1b" font-size="7.5" text-anchor="middle">Zero SMS at Stop (Pending)</text>
+
+        <!-- Converge to En Route -->
+        <line x1="520" y1="232" x2="520" y2="260" stroke="#0f172a" stroke-width="1.5" />
+        <line x1="130" y1="232" x2="130" y2="260" stroke="#0f172a" stroke-width="1.5" />
+        <line x1="130" y1="260" x2="520" y2="260" stroke="#0f172a" stroke-width="1.5" />
+        <line x1="325" y1="260" x2="325" y2="280" stroke="#0f172a" stroke-width="2" />
+
+        <!-- Node 4: In-Transit Telemetry & SOS Check -->
+        <polygon points="325,280 435,310 325,340 215,310" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5" />
+        <text x="325" y="313" fill="#991b1b" font-size="8.5" font-weight="bold" text-anchor="middle">AIS-140 Panic Button Pressed?</text>
+
+        <!-- SOS Trigger -->
+        <line x1="435" y1="310" x2="550" y2="310" stroke="#dc2626" stroke-width="2" />
+        <rect x="490" y="325" width="150" height="38" rx="6" fill="#b91c1c" />
+        <text x="565" y="342" fill="white" font-size="8" font-weight="bold" text-anchor="middle">Driver Cabin Flashing Siren</text>
+        <text x="565" y="354" fill="white" font-size="7.5" text-anchor="middle">Instant SOS SMS to Parent</text>
+
+        <line x1="325" y1="340" x2="325" y2="375" stroke="#0f172a" stroke-width="2" />
+
+        <!-- Node 5: Destination Arrival -->
+        <rect x="225" y="375" width="200" height="36" rx="6" fill="#1e3a8a" />
+        <text x="325" y="397" fill="white" font-size="9" font-weight="bold" text-anchor="middle">Driver Marks: School Gate Reached</text>
+
+        <line x1="325" y1="411" x2="325" y2="430" stroke="#0f172a" stroke-width="2" />
+
+        <!-- Node 6: Segregated SMS Dispatch -->
+        <rect x="120" y="430" width="410" height="36" rx="6" fill="#f8fafc" stroke="#0f172a" stroke-width="2" />
+        <text x="325" y="445" fill="#0f172a" font-size="8.5" font-weight="bold" text-anchor="middle">Boarded: "Safely Reached School SMS" &bull; Unboarded: "BUS MISSED SMS"</text>
+        <text x="325" y="458" fill="#64748b" font-size="7.5" text-anchor="middle">Dispatched directly via Vercel Serverless Function to GSM Cellular Carriers</text>
+      </svg>
+    </div>
+
+    <div class="page-footer">
+      <span>VIT Innovative Projects &bull; PHY1901</span>
+      <span>Page 7</span>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 8: ON-BUS PANIC BUTTON ================= -->
+  <div class="page">
+    <h1 class="section-title">8. On-Bus Physical Panic Button Hardware (AIS-140)</h1>
+    <p>
+      The Automotive Industry Standard <strong>AIS-140</strong> (mandated by the Ministry of Road Transport and Highways - MoRTH) specifies that all public passenger transport vehicles must be fitted with emergency SOS panic devices linked to vehicle tracking units (VTUs).
+    </p>
+
+    <h2 class="sub-title">8.1 The Zero-Phone Dilemma Solved</h2>
+    <p>
+      If students do not have mobile phones while traveling, they cannot report driver rash driving, route deviations, harassment, or vehicle stalls. Our project bridges this gap by directly interfacing the bus's physical telemetry unit into the software ecosystem:
+    </p>
+    <ul>
+      <li><strong>Physical Mounting Location:</strong> Physical red tactile push buttons are mounted on interior stanchion pillars adjacent to Seat #4 and the rear emergency door within easy reach of seated and standing students.</li>
+      <li><strong>Autonomous Emergency Telemetry (Police & Depot Dispatch):</strong> Because the wall button is an anonymous vehicle hardware unit, it does not identify individual passengers. Instead, it triggers the onboard GSM/GPS modem to transmit emergency coordinates directly to <strong>Police Control Room (Dial 112 / ERSS)</strong> and the <strong>TNSTC Feeder Depot Command Center</strong>. (Individual parent SMS alerts are reserved for personal QR pass boarding and arrival events).</li>
+      <li><strong>Driver Cabin Alarm & Safe Roadside Halt:</strong> Simultaneously, the driver dashboard receives an instant flashing red emergency siren with an audible warning chime, mandating an immediate safe vehicle pull-over to the road shoulder to attend to the passengers.</li>
+    </ul>
+
+    <h2 class="sub-title">8.2 SMS Gateway Architecture on Vercel</h2>
+    <p>
+      Standard client-side browser requests to third-party SMS APIs (like SMSMobileAPI and Fast2SMS) are blocked by modern browsers due to <strong>CORS (Cross-Origin Resource Sharing)</strong>. Furthermore, standard single-page application (SPA) rewrites on Vercel mistakenly rewrite API endpoints to <code>index.html</code>.
+    </p>
+    <p>
+      To solve this, we developed native <strong>Vercel Serverless Functions</strong> (<code>/api/smsmobile.js</code> and <code>/api/fast2sms.js</code>) configured with negative lookahead routing in <code>vercel.json</code>:
+    </p>
+
+    <div style="background: #0f172a; color: #86efac; padding: 12px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 8pt;">
+      // vercel.json (Negative Lookahead Regex Routing)<br>
+      {<br>
+      &nbsp;&nbsp;"rewrites": [<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;{ "source": "/((?!api/).*)", "destination": "/index.html" }<br>
+      &nbsp;&nbsp;]<br>
+      }
+    </div>
+
+    <div class="page-footer">
+      <span>VIT Innovative Projects &bull; PHY1901</span>
+      <span>Page 8</span>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 9: DESIGN PROTOTYPE & MODULES ================= -->
+  <div class="page">
+    <h1 class="section-title">9. Design Prototype & System Modules</h1>
+    <p>
+      The user interface is engineered adhering to high-contrast <strong>Neo-Brutalist design tokens</strong> (stark black borders, tactile card elevation, monospaced typography) ensuring sunlight legibility on drivers' mobile phones.
+    </p>
+
+    <h2 class="sub-title">9.1 Key Software Modules</h2>
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>Module</th>
+          <th>File Location</th>
+          <th>Primary Operational Responsibilities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Driver Console</strong></td>
+          <td><code>src/components/DriverConsole.jsx</code></td>
+          <td>Trip start/end controls; continuous jsQR camera scanner; live speed telemetry; attendance roster; active panic alarm acknowledgement.</td>
+        </tr>
+        <tr>
+          <td><strong>Parent Live Tracker</strong></td>
+          <td><code>src/components/ParentLiveTracker.jsx</code></td>
+          <td>Real-time interactive Leaflet bus map; pickup stop countdown; segregated commuter roster; on-bus panic button simulation console.</td>
+        </tr>
+        <tr>
+          <td><strong>Digital Student Pass</strong></td>
+          <td><code>src/components/StudentBusPass.jsx</code></td>
+          <td>Encrypted 2D QR token generator; statutory G.O. Ms. No. 42 pass renderer; printable physical A4 card generator for parents.</td>
+        </tr>
+        <tr>
+          <td><strong>Admin Compliance Desk</strong></td>
+          <td><code>src/components/AdminConsole.jsx</code></td>
+          <td>Fleet-wide radar; single-school single-route compliance verification; student roster registry; emergency grievance redressal.</td>
+        </tr>
+        <tr>
+          <td><strong>Live Context Database</strong></td>
+          <td><code>src/context/LiveDatabaseContext.jsx</code></td>
+          <td>State broadcasting; arrival classification; cellular SMS dispatch pipeline; audio siren chime management.</td>
+        </tr>
+        <tr>
+          <td><strong>Serverless SMS Gateway</strong></td>
+          <td><code>api/smsmobile.js</code></td>
+          <td>Node.js cloud function proxying cellular SMS requests to mobile carriers without browser CORS restrictions.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="sub-title">9.2 Resilient jsQR Video Loop Engine</h2>
+    <p>
+      In early iterations, scanning an invalid or unrecognized QR code (such as a Wikipedia URL) caused the animation loop to terminate prematurely. We refactored the camera subsystem with React <code>useRef</code> locks, eliminating closure staleness:
+    </p>
+    <ul>
+      <li><code>requestAnimationFrame(scanVideoLoop)</code> is scheduled unconditionally on every frame, guaranteeing the camera stream never locks up.</li>
+      <li>Identical unrecognized frames are debounced with a 2-second cooldown to eliminate frame jitter, while valid student passes trigger instant verification.</li>
+    </ul>
+
+    <div class="page-footer">
+      <span>VIT Innovative Projects &bull; PHY1901</span>
+      <span>Page 9</span>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 10: AUTOMATED ARRIVAL CLASSIFICATION ================= -->
+  <div class="page">
+    <h1 class="section-title">10. Automated Boarded vs Missed Classification</h1>
+    <p>
+      A common flaw in conventional school transport tracking is broadcasting generic "Bus Reached School" messages to all enrolled route parents. If a student woke up late and never boarded the bus, their parents would receive a misleading message stating their child reached campus.
+    </p>
+
+    <h2 class="sub-title">10.1 The Segregated Dual-SMS Pipeline</h2>
+    <p>
+      When the bus driver terminates the morning route at the school gate (via the <em>"Mark Bus Arrived at School Gate"</em> action), our cloud engine partitions route students into two mutually exclusive cohorts:
+    </p>
+
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>Commuter Cohort</th>
+          <th>Boarding Flag</th>
+          <th>Synchronized Status</th>
+          <th>Dispatched Cellular SMS Template</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Boarded Commuters</strong></td>
+          <td><code>isBoarded: true</code><br><code>isMissed: false</code></td>
+          <td><span class="badge" style="background: #dcfce7; color: #166534;">Safely Arrived at School Gate</span></td>
+          <td><em>"TN-GOVT-EDU OFFICIAL: Bus 14A safely reached Government School Gate at 08:30 AM. Your ward Prem (10th Std) has safely entered campus. Free Govt Bus."</em></td>
+        </tr>
+        <tr>
+          <td><strong>Unboarded Commuters</strong></td>
+          <td><code>isBoarded: false</code><br><code>isMissed: true</code></td>
+          <td><span class="badge" style="background: #fee2e2; color: #991b1b;">Bus Missed / Not Boarded</span></td>
+          <td><em>"TN-GOVT-EDU ALERT: Bus 14A completed route and reached School Gate at 08:30 AM. Your ward Student 1 (10th Std) was NOT boarded at Morappur Bus Stand (BUS MISSED). Please verify with ward."</em></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="sub-title">10.2 State Synchronization Across All Portals</h2>
+    <p>
+      Upon arrival execution, the central database broadcasts updates to all active sessions:
+    </p>
+    <ul>
+      <li><strong>Driver Console:</strong> Counters immediately shift to <em>"X Arrived &bull; Y Missed"</em>. Unboarded students show red badges with a <em>"Late Board"</em> manual override option if the student was picked up along the way.</li>
+      <li><strong>Parent Tracker & Student Pass:</strong> Unboarded students see a red alert: <em>"⚠️ Bus Missed / Not Boarded: Bus completed route to School Gate."</em> Boarded students display the green safe drop-off badge.</li>
+    </ul>
+
+    <div class="page-footer">
+      <span>VIT Innovative Projects &bull; PHY1901</span>
+      <span>Page 10</span>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 11: CONTRIBUTION & CONCLUSION ================= -->
+  <div class="page">
+    <h1 class="section-title">11. Team Contribution & Task Allocation Matrix</h1>
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th style="width: 30%;">Team Member</th>
+          <th style="width: 25%;">Registration No.</th>
+          <th style="width: 45%;">Engineering Contributions & Modules Owned</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Avinash M.</strong></td>
+          <td>23BCE1042</td>
+          <td>System Architecture; jsQR Camera Frame Loop; Vercel Serverless SMS Gateway (<code>api/smsmobile.js</code>); Continuous Scanning Engine.</td>
+        </tr>
+        <tr>
+          <td><strong>Kavya S.</strong></td>
+          <td>23BCE1189</td>
+          <td>Driver Cabin Controller; Boarded vs Missed Classification Logic; Start Trip & GPS Telemetry State Management.</td>
+        </tr>
+        <tr>
+          <td><strong>Praveen Kumar R.</strong></td>
+          <td>23BCE1245</td>
+          <td>Parent Live Fleet Radar (Leaflet GIS); Stop arrival synchronization; Bus timetable database.</td>
+        </tr>
+        <tr>
+          <td><strong>Naveen Chandran T.</strong></td>
+          <td>23MIS0182</td>
+          <td>On-Bus Physical Panic Button (AIS-140) Simulator; Driver Emergency Siren Alert; Childline 1098 & Women Safety 181 integration.</td>
+        </tr>
+        <tr>
+          <td><strong>Sanjay Vignesh K.</strong></td>
+          <td>23BCE1408</td>
+          <td>Digital Student Pass QR generator; Neo-Brutalist CSS tokens; Admin Compliance Radar & Grievance Redressal Desk.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h1 class="section-title" style="margin-top: 25px;">12. Conclusion & Future Roadmap</h1>
+    <p>
+      The <strong>Smart Digital Transit & Attendance Safety Monitoring System</strong> successfully demonstrates that enterprise-grade commuter safety, real-time tracking, and automated parent communication can be achieved for public government schooling without forcing expensive smartphones or mobile internet subscriptions upon rural students.
+    </p>
+    <p>
+      By harmonizing durable printed QR passes, in-browser rear-camera scanning, Vercel cloud serverless telecom dispatch, and AIS-140 physical vehicle panic telemetry, the platform provides complete peace of mind to parents, drivers, and transport administrators alike.
+    </p>
+    <p>
+      <strong>Future Roadmap:</strong>
+      1. Hardware prototype of an ESP32 microcontroller with a physical illuminated red button connected directly to vehicle CAN-bus OBD-II telemetry.<br>
+      2. Automated speech broadcast in Tamil for bus stop arrival announcements inside the bus cabin.<br>
+      3. Machine-learning models to predict feeder corridor overcrowding based on seasonal agricultural harvests and school exam schedules.
+    </p>
+
+    <div class="page-footer">
+      <span>VIT Innovative Projects &bull; PHY1901</span>
+      <span>Page 11</span>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 12: REFERENCES ================= -->
+  <div class="page">
+    <h1 class="section-title">13. Academic & Technical References</h1>
+
+    <h2 class="sub-title">13.1 Government Policies & Statutory Transport Standards</h2>
+    <ol>
+      <li>
+        <strong>Government of Tamil Nadu (Transport & Education Dept):</strong> <em>G.O. Ms. No. 42 (100% Free Concessional Travel Scheme for Government School Students in TNSTC Buses)</em>, Secretariat, Chennai, Tamil Nadu.
+      </li>
+      <li>
+        <strong>Ministry of Road Transport and Highways (MoRTH), Govt. of India:</strong> <em>Automotive Industry Standard 140 (AIS-140): Intelligent Transportation Systems (ITS) for Public Transport Vehicles</em>, Automotive Research Association of India (ARAI), Pune.
+      </li>
+      <li>
+        <strong>Telecom Regulatory Authority of India (TRAI):</strong> <em>Telecom Commercial Communications Customer Preference Regulations (TCCCPR) - DLT Standards for Transactional Government Educational SMS</em>, New Delhi.
+      </li>
+    </ol>
+
+    <h2 class="sub-title">13.2 Technical & Computational Literature</h2>
+    <ol start="4">
+      <li>
+        <strong>SMSMobileAPI Official Documentation:</strong> <em>HTTP RESTful Push Gateway & Cellular GSM Bridge for Automated SMS Routing</em>. Available at: <a href="https://smsmobileapi.com/documentation/" target="_blank" style="color: #2563eb;">https://smsmobileapi.com/documentation/</a>.
+      </li>
+      <li>
+        <strong>Fast2SMS Telecom Gateway:</strong> <em>Quick Transactional Route API Documentation for Indian Cellular Operators</em>. Available at: <a href="https://www.fast2sms.com/dev/bulkV2" target="_blank" style="color: #2563eb;">https://www.fast2sms.com/dev/bulkV2</a>.
+      </li>
+      <li>
+        <strong>jsQR Open-Source QR Reader Engine:</strong> <em>Pure JavaScript QR Code Reader Library for Real-Time HTML5 Canvas Video Streams</em>. Available at: <a href="https://github.com/cozmo/jsQR" target="_blank" style="color: #2563eb;">https://github.com/cozmo/jsQR</a>.
+      </li>
+      <li>
+        <strong>Vercel Serverless Architecture:</strong> <em>Edge & Node.js Serverless Functions for Cross-Origin REST API Proxying</em>. Available at: <a href="https://vercel.com/docs/functions" target="_blank" style="color: #2563eb;">https://vercel.com/docs/functions</a>.
+      </li>
+      <li>
+        <strong>Leaflet GIS Engine:</strong> <em>Open-Source JavaScript Library for Mobile-Friendly Interactive Satellite Maps & Route Polylines</em>. Available at: <a href="https://leafletjs.com/" target="_blank" style="color: #2563eb;">https://leafletjs.com/</a>.
+      </li>
+      <li>
+        <strong>Reed, I. S., & Solomon, G.:</strong> <em>Polynomial Codes over Certain Finite Fields</em>, Journal of the Society for Industrial and Applied Mathematics, fundamental basis of 2D Matrix QR error correction.
+      </li>
+    </ol>
+
+    <div class="callout" style="margin-top: 35px;">
+      <strong>Project Repository:</strong> Available at <a href="https://github.com/avinashvit/tnhcts_transport_problems_solutions_project" target="_blank" style="color: #2563eb; font-weight: bold;">avinashvit/tnhcts_transport_problems_solutions_project</a> &bull; Deployed on Vercel.
+    </div>
+
+    <div class="page-footer">
+      <span>VIT Innovative Projects &bull; PHY1901</span>
+      <span>Page 12</span>
+    </div>
+  </div>
+
+</body>
+</html>

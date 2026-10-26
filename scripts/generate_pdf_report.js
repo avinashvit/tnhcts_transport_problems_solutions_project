@@ -1,0 +1,1003 @@
+import fs from 'fs';
+import path from 'path';
+import puppeteer from 'puppeteer';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const PROJECT_DIR = path.resolve(__dirname, '..');
+const SCREENSHOTS_DIR = path.resolve(PROJECT_DIR, 'screenshots');
+const CHROME_PATH = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+
+const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SchoolRoute TN - Project Screenshots & System Features Walkthrough</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+    :root {
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --accent-green: #16a34a;
+      --accent-red: #dc2626;
+      --border: #cbd5e1;
+      --card-bg: #ffffff;
+      --bg: #f8fafc;
+      --text: #1e293b;
+      --text-muted: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background-color: #e2e8f0;
+      line-height: 1.6;
+      padding: 24px 0;
+    }
+
+    /* Floating Toolbar */
+    .toolbar {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      gap: 10px;
+      background: white;
+      padding: 8px 14px;
+      border-radius: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      border: 1px solid var(--border);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .toolbar button {
+      background: #0f172a;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .toolbar button:hover {
+      background: #2563eb;
+    }
+
+    /* Page Layout */
+    .document-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px 50px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+      border-radius: 12px;
+    }
+
+    /* Cover / Header Box */
+    .doc-header {
+      border-bottom: 3px solid #0f172a;
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .doc-header-left h1 {
+      font-size: 24pt;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+
+    .doc-header-left p.sub {
+      font-size: 11pt;
+      color: #475569;
+      font-weight: 600;
+      margin-top: 6px;
+    }
+
+    .doc-header-left p.badges {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8pt;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: #e2e8f0;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+    }
+
+    .badge-green {
+      background: #dcfce7;
+      color: #166534;
+      border-color: #86efac;
+    }
+
+    .badge-blue {
+      background: #dbeafe;
+      color: #1e40af;
+      border-color: #93c5fd;
+    }
+
+    .badge-red {
+      background: #fee2e2;
+      color: #991b1b;
+      border-color: #fca5a5;
+    }
+
+    .badge-black {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+    }
+
+    .meta-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 9pt;
+      text-align: right;
+    }
+
+    .meta-card strong {
+      display: block;
+      color: #0f172a;
+      font-size: 10.5pt;
+    }
+
+    /* Section Styling */
+    h2.section-heading {
+      font-size: 15pt;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-left: 5px solid #2563eb;
+      padding-left: 12px;
+      margin: 35px 0 16px 0;
+    }
+
+    h3.screenshot-title {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 25px 0 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    p.screenshot-desc {
+      font-size: 10pt;
+      color: #334155;
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    /* Screenshot Card Container */
+    .screenshot-card {
+      background: #f8fafc;
+      border: 2px solid #0f172a;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 20px 0 28px 0;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      page-break-inside: avoid;
+    }
+
+    .screenshot-header {
+      background: #0f172a;
+      color: white;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9pt;
+      font-weight: 700;
+    }
+
+    .screenshot-image-box {
+      background: #000;
+      border-bottom: 2px solid #0f172a;
+      text-align: center;
+    }
+
+    .screenshot-image-box img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .screenshot-body {
+      padding: 18px 20px;
+      background: white;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .feature-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 9pt;
+    }
+
+    .feature-item strong {
+      display: block;
+      color: #0f172a;
+      margin-bottom: 4px;
+      font-size: 9.5pt;
+    }
+
+    .tech-pill {
+      margin-top: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8pt;
+      color: #475569;
+      background: #f1f5f9;
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px dashed #cbd5e1;
+    }
+
+    /* Tables */
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: 9pt;
+    }
+
+    .content-table th {
+      background: #0f172a;
+      color: white;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 700;
+      border: 1px solid #0f172a;
+    }
+
+    .content-table td {
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .content-table tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    .callout {
+      background: #eff6ff;
+      border-left: 4px solid #2563eb;
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 18px 0;
+      font-size: 9.5pt;
+    }
+
+    .page-break {
+      page-break-before: always;
+      margin-top: 30px;
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .toolbar {
+        display: none;
+      }
+      .document-container {
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .screenshot-card {
+        page-break-inside: avoid;
+        margin: 15px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Print Toolbar -->
+  <div class="toolbar">
+    <button onclick="window.print()">
+      🖨️ Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="document-container">
+    <!-- Header -->
+    <div class="doc-header">
+      <div class="doc-header-left">
+        <h1>SchoolRoute TN — Visual Project Walkthrough</h1>
+        <p class="sub">Smart Digital Transit & Attendance Safety Monitoring System for Government School Commuters</p>
+        <p class="badges">
+          <span class="badge badge-black">G.O. Ms. No. 42 COMPLIANT</span>
+          <span class="badge badge-green">ZERO-PHONE ARCHITECTURE</span>
+          <span class="badge badge-red">MoRTH AIS-140 PANIC HARDWARE</span>
+          <span class="badge badge-blue">LIVE CELLULAR GSM SMS DISPATCH</span>
+        </p>
+      </div>
+      <div class="meta-card">
+        <strong>Vellore Institute of Technology</strong>
+        <span>Course: Innovative Projects (PHY1901)</span>
+        <span style="display:block; color: #2563eb; font-weight: 700; margin-top: 4px;">Student: Avinash M. (23BCE1042)</span>
+        <span style="display:block; color: #64748b;">Guide: Prof. Dr. S. K. Meenakshi Sundaram</span>
+      </div>
+    </div>
+
+    <!-- Executive Overview -->
+    <div class="callout">
+      <strong>Executive Summary:</strong> This document demonstrates the complete execution and running interface of <strong>SchoolRoute TN</strong>. Designed specifically for underprivileged Tamil Nadu government school students traveling under the 100% Free Commuter Bus Scheme, it completely eliminates the need for students to carry smartphones. Using printable laminated 2D QR bus passes, camera-based driver verification (jsQR), on-bus AIS-140 physical panic buttons, and real-time cellular SMS dispatch via Vercel serverless gateways, the platform ensures total commuter safety and attendance integrity.
+    </div>
+
+    <!-- System Architecture Matrix -->
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>Role / Portal</th>
+          <th>Primary User</th>
+          <th>Hardware Utilized</th>
+          <th>Core Operational Capability</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Student & Parent Mobile Portal</strong></td>
+          <td>School Commuters & Parents</td>
+          <td>Physical Laminated QR Pass & Basic Keypad/GSM Phone</td>
+          <td>Real-time Leaflet GPS bus tracking, digital pass generator, AIS-140 on-bus emergency panic simulator, live SMS log.</td>
+        </tr>
+        <tr>
+          <td><strong>Driver Cabin Console</strong></td>
+          <td>TNSTC State Bus Driver</td>
+          <td>Standard Mobile/Tablet with Camera</td>
+          <td>Continuous jsQR camera pass scanner, trip controls, live GPS speed/crowd telemetry, cabin flashing emergency siren.</td>
+        </tr>
+        <tr>
+          <td><strong>Admin & HQ Command Desk</strong></td>
+          <td>District Transport Officer (DTO)</td>
+          <td>Depot Computer / Browser Console</td>
+          <td>Statewide fleet radar, student roster management, dynamic driver duty allocation, grievance redressal & official petition generator.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- ================= SCREENSHOT 1 ================= -->
+    <h2 class="section-heading">Screen 1: Centralized Role-Based Authentication Gateway</h2>
+    <p class="screenshot-desc">
+      The entry point to the system is a high-contrast Neo-Brutalist Single Sign-On (SSO) gateway allowing instant, secure role-based access across all three user classes.
+    </p>
+
+    <div class="screenshot-card">
+      <div class="screenshot-header">
+        <span>SCREENSHOT 01 &bull; ROLE LOGIN PORTAL</span>
+        <span>URL: http://localhost:5173/</span>
+      </div>
+      <div class="screenshot-image-box">
+        <img src="screenshots/01_login_portal.png" alt="Role Login Portal">
+      </div>
+      <div class="screenshot-body">
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>1. Role-Specific Tab Selector</strong>
+            Clean toggle switches between: (1) Student Commuter / Parent, (2) Bus Driver / Crew, and (3) Depot Transport Officer (Admin).
+          </div>
+          <div class="feature-item">
+            <strong>2. Commuter Identification Verification</strong>
+            Students authenticate via their unique EMIS ID (e.g. <code>STU-101</code>) or parent registered mobile phone (+91 73059 40480) with student PIN.
+          </div>
+          <div class="feature-item">
+            <strong>3. Pre-defined Driver Fleet Verification</strong>
+            Crew login verifies driver registration against the TNSTC Depot roster, automatically synchronizing the driver's active route schedule.
+          </div>
+          <div class="feature-item">
+            <strong>4. District Transport Officer Security</strong>
+            Central administrative master login reserved for the District Transport Officer with statewide oversight credentials.
+          </div>
+        </div>
+        <div class="tech-pill">
+          <strong>Engineering Details:</strong> Implemented in <code>src/pages/RoleLoginPage.jsx</code> with session persistence stored in <code>localStorage</code> under <code>schoolroute_tn_active_role_clean_v7</code>.
+        </div>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ================= SCREENSHOT 2 ================= -->
+    <h2 class="section-heading">Screen 2: Parent Live GPS Satellite Fleet Tracker</h2>
+    <p class="screenshot-desc">
+      Real-time parent monitoring console showing feeder bus progress, distance countdown, telemetry statistics, and the live commuter boarding roster.
+    </p>
+
+    <div class="screenshot-card">
+      <div class="screenshot-header">
+        <span>SCREENSHOT 02 &bull; PARENT LIVE GPS FLEET TRACKER</span>
+        <span>VIEW: Student / Parent Mobile Portal</span>
+      </div>
+      <div class="screenshot-image-box">
+        <img src="screenshots/02_parent_live_tracker.png" alt="Parent Live Tracker">
+      </div>
+      <div class="screenshot-body">
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>1. Live Progress & Remaining Distance</strong>
+            Calculates exact kilometers remaining to the school gate with live estimated time of arrival (ETA) updated as the bus moves.
+          </div>
+          <div class="feature-item">
+            <strong>2. Route Telemetry KPI Cards</strong>
+            Live displays for safe operating speed (e.g., 38 km/h), passenger crowd status, and assigned TNSTC depot details.
+          </div>
+          <div class="feature-item">
+            <strong>3. Stop-by-Stop Visual Progress Bar</strong>
+            Dynamic timeline showing completed stops (Morappur, Kadayampatti), active next stop, and upcoming destination school.
+          </div>
+          <div class="feature-item">
+            <strong>4. Commuter Boarding Status Roster</strong>
+            Displays whether the enrolled student is currently <em>Waiting at Stop</em> or verified <em>On Board</em>.
+          </div>
+        </div>
+        <div class="tech-pill">
+          <strong>Engineering Details:</strong> Implemented in <code>src/components/ParentLiveTracker.jsx</code>, utilizing <code>LiveDatabaseContext</code> for reactive real-time updates.
+        </div>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ================= SCREENSHOT 3 ================= -->
+    <h2 class="section-heading">Screen 3: MoRTH AIS-140 On-Bus Physical Panic Button SOS Simulator</h2>
+    <p class="screenshot-desc">
+      Physical vehicle emergency telemetry simulation that protects students traveling without mobile phones in cases of dangerous driving, harassment, or route deviations.
+    </p>
+
+    <div class="screenshot-card">
+      <div class="screenshot-header">
+        <span>SCREENSHOT 03 &bull; AIS-140 EMERGENCY SOS CONSOLE</span>
+        <span>MODAL: On-Bus Stanchion Panic Hardware</span>
+      </div>
+      <div class="screenshot-image-box">
+        <img src="screenshots/03_ais140_panic_modal.png" alt="AIS-140 Panic Modal">
+      </div>
+      <div class="screenshot-body">
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>1. Wall-Mounted Physical Button Simulation</strong>
+            Simulates tactile red SOS push-buttons mounted on interior stanchion pillars adjacent to Seat #4 and the rear emergency door.
+          </div>
+          <div class="feature-item">
+            <strong>2. Four Emergency Incident Categories</strong>
+            Allows immediate categorization: (1) Rash Driving & Overspeeding, (2) Route Deviation, (3) Vehicle Breakdown, (4) In-Transit Harassment.
+          </div>
+          <div class="feature-item">
+            <strong>3. Statutory MoRTH AIS-140 Targets</strong>
+            Because the wall button is an anonymous vehicle hardware device, it does not identify individual passengers. Instead, it transmits direct satellite telemetry to: (A) <strong>Police Control Room (Dial 112 / ERSS)</strong>, (B) <strong>Driver Cabin Flashing Siren</strong> (prompting an immediate safe roadside pull-over), and (C) <strong>TNSTC Feeder Depot Command Center</strong>. (Individual parent SMS alerts are reserved for personal QR pass boarding and arrival events).
+          </div>
+          <div class="feature-item">
+            <strong>4. Statutory Helpline Integration</strong>
+            Direct institutional emergency numbers: Police Emergency 112, Childline 1098, Women Safety Helpline 181, and District Transport Control (04342-260100).
+          </div>
+        </div>
+        <div class="tech-pill">
+          <strong>Engineering Details:</strong> Powered by <code>studentReportIrregularBehavior()</code> in <code>LiveDatabaseContext.jsx</code>, routing telemetry to Police ERSS 112 and driver dashboard.
+        </div>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ================= SCREENSHOT 4 ================= -->
+    <h2 class="section-heading">Screen 4: Statutory Digital Student Bus Pass (G.O. Ms. No. 42)</h2>
+    <p class="screenshot-desc">
+      Statutory Tamil Nadu Government School Free Bus Pass generator embedding tamper-resistant 2D QR matrix tokens for physical lamination.
+    </p>
+
+    <div class="screenshot-card">
+      <div class="screenshot-header">
+        <span>SCREENSHOT 04 &bull; DIGITAL SMART BUS PASS</span>
+        <span>VIEW: Printable Physical Student Commuter Card</span>
+      </div>
+      <div class="screenshot-image-box">
+        <img src="screenshots/04_student_bus_pass.png" alt="Student Bus Pass">
+      </div>
+      <div class="screenshot-body">
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>1. Reed-Solomon 2D QR Token</strong>
+            Generates standardized QR tokens containing encrypted student data (EMIS ID, student name, assigned bus, pickup stop, parent phone).
+          </div>
+          <div class="feature-item">
+            <strong>2. Zero-Phone Commute Physical Pass</strong>
+            Designed to be printed on standard paper/cardstock and laminated; completely zero battery and zero internet requirement for the child.
+          </div>
+          <div class="feature-item">
+            <strong>3. Statutory Scheme Compliance</strong>
+            Officially formatted according to Tamil Nadu Government Order G.O. Ms. No. 42 (100% Free Concessional Travel Scheme).
+          </div>
+          <div class="feature-item">
+            <strong>4. Instant Live Status Reflection</strong>
+            Live card badge displays real-time trip state: <em>Waiting at Stop</em>, <em>On Board</em>, or <em>Safely Arrived at School Gate</em>.
+          </div>
+        </div>
+        <div class="tech-pill">
+          <strong>Engineering Details:</strong> Implemented in <code>src/components/StudentBusPass.jsx</code> using the <code>qrcode</code> NPM package with Error Correction Level M.
+        </div>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ================= SCREENSHOT 5 ================= -->
+    <h2 class="section-heading">Screen 5: Interactive GIS Feeder Route Map</h2>
+    <p class="screenshot-desc">
+      Interactive OpenStreetMap radar powered by Leaflet.js rendering live vehicle positions, route polylines, feeder village halts, and destination schools.
+    </p>
+
+    <div class="screenshot-card">
+      <div class="screenshot-header">
+        <span>SCREENSHOT 05 &bull; INTERACTIVE GPS FLEET MAP</span>
+        <span>ENGINE: Leaflet.js OpenStreetMap Radar</span>
+      </div>
+      <div class="screenshot-image-box">
+        <img src="screenshots/05_live_bus_map.png" alt="Live Bus Map">
+      </div>
+      <div class="screenshot-body">
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>1. Dynamic Bus Vehicle Marker</strong>
+            Pulsing vehicle icon positioned at live GPS coordinates along the state highway corridor with route direction orientation.
+          </div>
+          <div class="feature-item">
+            <strong>2. Feeder Stop Geocoding</strong>
+            Color-coded stop markers indicating passed stops (green), current stop, and destination government higher secondary schools.
+          </div>
+          <div class="feature-item">
+            <strong>3. Smooth Route Polyline</strong>
+            High-contrast path overlay mapping the exact legal route traveled by TNSTC school feeder buses.
+          </div>
+          <div class="feature-item">
+            <strong>4. Interactive Popup Details</strong>
+            Clicking markers reveals pickup timings, distance milestones, student count, and driver emergency contacts.
+          </div>
+        </div>
+        <div class="tech-pill">
+          <strong>Engineering Details:</strong> Implemented in <code>src/components/LiveBusMap.jsx</code> using standard OpenStreetMap tiles, custom Leaflet SVG div-icons, and dynamic bounds fitting.
+        </div>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ================= SCREENSHOT 6 ================= -->
+    <h2 class="section-heading">Screen 6: Feeder Bus Timetable & Corridor Schedule</h2>
+    <p class="screenshot-desc">
+      Public commuter schedule explorer detailing morning school pickup runs, evening return trips, intermediate village halts, and scheduled driver assignments.
+    </p>
+
+    <div class="screenshot-card">
+      <div class="screenshot-header">
+        <span>SCREENSHOT 06 &bull; BUS TIMETABLE & SCHEDULE</span>
+        <span>VIEW: Rural Feeder Corridor Timings</span>
+      </div>
+      <div class="screenshot-image-box">
+        <img src="screenshots/06_bus_timetable.png" alt="Bus Timetable">
+      </div>
+      <div class="screenshot-body">
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>1. Dual-Shift Transit Timing</strong>
+            Displays Morning Inbound School Feeder runs (07:30 AM – 08:30 AM) and Evening Outbound Return runs (04:15 PM – 05:15 PM).
+          </div>
+          <div class="feature-item">
+            <strong>2. Punctuality & Sync Indicators</strong>
+            Highlights synchronized connections preventing students from missing morning prayer bells or examination sessions.
+          </div>
+          <div class="feature-item">
+            <strong>3. Multi-Route Coverage</strong>
+            Enables switching between Route 14A (Morappur – Dharmapuri), Route 7B (Kadayampatti), and Route 21 (Pennagaram).
+          </div>
+          <div class="feature-item">
+            <strong>4. 1-Click Route Tracking</strong>
+            Quick action button to instantly track any timetable route directly on the live satellite map.
+          </div>
+        </div>
+        <div class="tech-pill">
+          <strong>Engineering Details:</strong> Implemented in <code>src/components/BusTimetable.jsx</code> with static and live schedule synchronization.
+        </div>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ================= SCREENSHOT 7 ================= -->
+    <h2 class="section-heading">Screen 7: Bus Driver Cabin Telemetry & Attendance Console</h2>
+    <p class="screenshot-desc">
+      Dedicated mobile/tablet workspace engineered for state bus drivers with large tactile controls, live trip telemetry, delay reporting, and passenger boarding logs.
+    </p>
+
+    <div class="screenshot-card">
+      <div class="screenshot-header">
+        <span>SCREENSHOT 07 &bull; DRIVER CABIN CONSOLE</span>
+        <span>ROLE: TNSTC State Bus Driver (Crew Console)</span>
+      </div>
+      <div class="screenshot-image-box">
+        <img src="screenshots/07_driver_console.png" alt="Driver Console">
+      </div>
+      <div class="screenshot-body">
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>1. One-Click Trip Controls</strong>
+            Large touch buttons to "Start Feeder Trip", "Advance Next Stop", and "Mark Bus Arrived at School Gate".
+          </div>
+          <div class="feature-item">
+            <strong>2. Speed & Crowd Telemetry Sliders</strong>
+            Enables driver to update operating speed (km/h) and crowd level (Normal / Packed / Overcrowded) with instant cloud broadcast.
+          </div>
+          <div class="feature-item">
+            <strong>3. Real-Time Delay Broadcasting</strong>
+            Pre-configured delay triggers (Railway Gate Closed, Heavy Highway Congestion, Tire Repair) updating parent map indicators.
+          </div>
+          <div class="feature-item">
+            <strong>4. Commuter Boarding Roster</strong>
+            Interactive student roster with one-click manual boarding toggle for students whose physical cards are temporarily lost.
+          </div>
+        </div>
+        <div class="tech-pill">
+          <strong>Engineering Details:</strong> Implemented in <code>src/components/DriverConsole.jsx</code>; state synced across all sessions via <code>LiveDatabaseContext.jsx</code>.
+        </div>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ================= SCREENSHOT 8 ================= -->
+    <h2 class="section-heading">Screen 8: In-Browser jsQR Video Stream Camera Scanner</h2>
+    <p class="screenshot-desc">
+      High-speed HTML5 Canvas camera scanner using the jsQR library to scan student passes on the bus entry step within milliseconds without freezing.
+    </p>
+
+    <div class="screenshot-card">
+      <div class="screenshot-header">
+        <span>SCREENSHOT 08 &bull; jsQR CAMERA SCANNER MODAL</span>
+        <span>ENGINE: Real-Time HTML5 Canvas Video Frame Loop</span>
+      </div>
+      <div class="screenshot-image-box">
+        <img src="screenshots/08_driver_qr_scanner_modal.png" alt="Driver QR Scanner Modal">
+      </div>
+      <div class="screenshot-body">
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>1. Continuous Non-Blocking Video Loop</strong>
+            Runs <code>requestAnimationFrame(scanVideoLoop)</code> unconditionally on every frame; unrecognized or damaged codes never freeze the stream.
+          </div>
+          <div class="feature-item">
+            <strong>2. Sub-Second Boarding Verification</strong>
+            Instantly extracts the encrypted payload, marks student as <em>On Board</em>, and dispatches a cellular SMS to parent mobile.
+          </div>
+          <div class="feature-item">
+            <strong>3. Frame Throttling & 2-Second Debounce</strong>
+            Prevents rapid duplicate scans and multiple SMS charges using timestamp cooldowns and React <code>useRef</code> locks.
+          </div>
+          <div class="feature-item">
+            <strong>4. Manual EMIS ID Fallback</strong>
+            Provides manual text input for entering student registration numbers if camera lens is smudged or pass is physically damaged.
+          </div>
+        </div>
+        <div class="tech-pill">
+          <strong>Engineering Details:</strong> Implemented in <code>src/components/DriverConsole.jsx#L150-L240</code>; integrates Web Audio API for two-tone chime upon scan.
+        </div>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ================= SCREENSHOT 9 ================= -->
+    <h2 class="section-heading">Screen 9: School Arrival Classification & Real-Time Push SMS Banner</h2>
+    <p class="screenshot-desc">
+      Automated destination arrival sequence segregating commuters into Safe Arrival vs. Bus Missed cohorts with real-time sliding SMS push notification banner.
+    </p>
+
+    <div class="screenshot-card">
+      <div class="screenshot-header">
+        <span>SCREENSHOT 09 &bull; SCHOOL ARRIVAL & SEGREGATED SMS</span>
+        <span>FEATURE: Dual-Cohort Automated Arrival Pipeline</span>
+      </div>
+      <div class="screenshot-image-box">
+        <img src="screenshots/09_school_arrival_and_sms_banner.png" alt="School Arrival & SMS Banner">
+      </div>
+      <div class="screenshot-body">
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>1. Real-Time SMS Notification Banner</strong>
+            Sliding black and neon notification banner simulating cellular SMS delivery to parent mobile (+91 73059 40480) via SMSMobileAPI.
+          </div>
+          <div class="feature-item">
+            <strong>2. Boarded Commuters Safe Arrival SMS</strong>
+            Boarded students receive green badge: <em>"Bus 14A safely reached School Gate. Your ward Prem has entered campus."</em>
+          </div>
+          <div class="feature-item">
+            <strong>3. Unboarded Commuters "Bus Missed" Alert</strong>
+            Absent students receive urgent red alert: <em>"Bus 14A reached School Gate. Your ward was NOT boarded at Morappur (BUS MISSED)."</em>
+          </div>
+          <div class="feature-item">
+            <strong>4. Late Board Override</strong>
+            Enables driver to manually mark a student as late-boarded if picked up en route, correcting attendance records immediately.
+          </div>
+        </div>
+        <div class="tech-pill">
+          <strong>Engineering Details:</strong> Implemented in <code>driverArriveAtSchool()</code> inside <code>src/context/LiveDatabaseContext.jsx</code> and rendered in <code>src/App.jsx</code>.
+        </div>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ================= SCREENSHOT 10 ================= -->
+    <h2 class="section-heading">Screen 10: Central Admin Fleet Command Desk & Student Enrollment</h2>
+    <p class="screenshot-desc">
+      Statewide administrative portal for the District Transport Officer (DTO) featuring high-level operational KPIs, student search, and new commuter registration.
+    </p>
+
+    <div class="screenshot-card">
+      <div class="screenshot-header">
+        <span>SCREENSHOT 10 &bull; ADMIN FLEET COMMAND DESK</span>
+        <span>ROLE: District Transport Officer (Statewide Oversight)</span>
+      </div>
+      <div class="screenshot-image-box">
+        <img src="screenshots/10_admin_console_students.png" alt="Admin Console Students">
+      </div>
+      <div class="screenshot-body">
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>1. Four Key Performance Metrics</strong>
+            At-a-glance KPI cards tracking: (1) Total Registered Students, (2) Active On-Board Count, (3) Total Feeder Buses, (4) Grievances.
+          </div>
+          <div class="feature-item">
+            <strong>2. New Commuter Registration Engine</strong>
+            Administrative form to enroll new students with auto-generated EMIS IDs, class allocation, pickup stops, and parent phone numbers.
+          </div>
+          <div class="feature-item">
+            <strong>3. Student Search & Filtering</strong>
+            Search bar to filter students by name, EMIS number, feeder stop, or destination government school.
+          </div>
+          <div class="feature-item">
+            <strong>4. Record Management Actions</strong>
+            Full administrative authority to edit details, reassign feeder buses, or remove student commuter records.
+          </div>
+        </div>
+        <div class="tech-pill">
+          <strong>Engineering Details:</strong> Implemented in <code>src/components/AdminConsole.jsx</code>; changes broadcast instantaneously to active driver and parent sessions.
+        </div>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ================= SCREENSHOT 11 ================= -->
+    <h2 class="section-heading">Screen 11: Admin Driver Duty Allocation & Standby Roster Management</h2>
+    <p class="screenshot-desc">
+      Depot crew assignment desk allowing transport nodal officers to assign active duty drivers to school buses and manage certified standby reserves.
+    </p>
+
+    <div class="screenshot-card">
+      <div class="screenshot-header">
+        <span>SCREENSHOT 11 &bull; DRIVER DUTY ALLOCATION</span>
+        <span>MODULE: TNSTC Depot Crew Roster Management</span>
+      </div>
+      <div class="screenshot-image-box">
+        <img src="screenshots/11_admin_driver_assignments.png" alt="Admin Driver Assignments">
+      </div>
+      <div class="screenshot-body">
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>1. Bus Route Crew Linkage</strong>
+            Assigns certified state drivers to specific school feeder routes (e.g. assigning Driver 1 to Bus 14A).
+          </div>
+          <div class="feature-item">
+            <strong>2. Standby Driver Pool</strong>
+            Maintains certified standby drivers ready for instant deployment during driver illness or route emergencies.
+          </div>
+          <div class="feature-item">
+            <strong>3. Live Session Synchronization</strong>
+            Reassigning a driver immediately updates the driver's active logged-in cabin console without requiring re-login.
+          </div>
+          <div class="feature-item">
+            <strong>4. Driver Duty Profile Verification</strong>
+            Displays driver years of experience, official license numbers, assigned depot, and lifetime trip safety ratings.
+          </div>
+        </div>
+        <div class="tech-pill">
+          <strong>Engineering Details:</strong> Implemented in <code>assignDriverToBus()</code> inside <code>src/context/LiveDatabaseContext.jsx</code>.
+        </div>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ================= SCREENSHOT 12 ================= -->
+    <h2 class="section-heading">Screen 12: Admin Grievance Redressal Desk & Official Petition Generator</h2>
+    <p class="screenshot-desc">
+      Administrative compliance desk to process commuter grievances and generate statutory government petitions for fleet augmentation and stop expansion.
+    </p>
+
+    <div class="screenshot-card">
+      <div class="screenshot-header">
+        <span>SCREENSHOT 12 &bull; GRIEVANCE DESK & PETITIONS</span>
+        <span>OUTPUT: Formal Secretariat Administrative Petitions</span>
+      </div>
+      <div class="screenshot-image-box">
+        <img src="screenshots/12_admin_grievances_desk.png" alt="Admin Grievances Desk">
+      </div>
+      <div class="screenshot-body">
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>1. Public Transport Bottleneck Ingestion</strong>
+            Ingests student grievances regarding bypassed village stops, severe footboard overcrowding, and schedule mismatches.
+          </div>
+          <div class="feature-item">
+            <strong>2. Status Progression Lifecycle</strong>
+            Tracks grievance lifecycle from <em>Reported</em> ➔ <em>Under Dept Review</em> ➔ <em>Resolved (Action Taken)</em>.
+          </div>
+          <div class="feature-item">
+            <strong>3. Official Secretariat Petition Generator</strong>
+            Generates formal Tamil Nadu Secretariat administrative transport petition documents formatted for the Education Secretary.
+          </div>
+          <div class="feature-item">
+            <strong>4. SMS Audit Log Inspection</strong>
+            Inspects historical cellular SMS dispatch logs confirming parent telecom message delivery timestamps.
+          </div>
+        </div>
+        <div class="tech-pill">
+          <strong>Engineering Details:</strong> Implemented in <code>src/components/AdminConsole.jsx</code> and <code>src/components/OfficialPetitionModal.jsx</code>.
+        </div>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ================= TECHNICAL SUMMARY & PROBLEM-SOLVING MATRIX ================= -->
+    <h2 class="section-heading">Technical Problem-Solving Matrix (Hurdles & Solutions)</h2>
+    <p class="screenshot-desc">
+      Summary of major engineering hurdles encountered during the development of SchoolRoute TN and the exact architectural solutions implemented to sort them:
+    </p>
+
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th style="width: 25%;">Challenge Encountered</th>
+          <th style="width: 35%;">Underlying Technical Bottleneck</th>
+          <th style="width: 40%;">Implemented Solution & Architecture</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Browser CORS Block on SMS APIs</strong></td>
+          <td>Direct browser <code>fetch()</code> calls to SMSMobileAPI and Fast2SMS failed due to Cross-Origin Resource Sharing restrictions.</td>
+          <td>Engineered <strong>Vercel Serverless Functions</strong> (<code>api/smsmobile.js</code> and <code>api/fast2sms.js</code>) acting as cloud reverse proxies with explicit CORS headers.</td>
+        </tr>
+        <tr>
+          <td><strong>2. Vercel SPA Route Hijacking</strong></td>
+          <td>Standard Vite SPA rewrites (<code>/* ➔ /index.html</code>) mistakenly returned HTML text for API calls, causing JSON parsing crashes.</td>
+          <td>Implemented <strong>negative lookahead regex</strong> in <code>vercel.json</code>: <code>"source": "/((?!api/).*)"</code>, preserving API routes while serving SPA pages.</td>
+        </tr>
+        <tr>
+          <td><strong>3. jsQR Camera Stream Freezing</strong></td>
+          <td>Scanning non-JSON QR codes threw unhandled exceptions, breaking <code>requestAnimationFrame</code> and freezing the camera stream.</td>
+          <td>Refactored scanner with React <code>useRef</code> locks; scheduled <code>requestAnimationFrame</code> unconditionally on every frame with error isolation.</td>
+        </tr>
+        <tr>
+          <td><strong>4. Rapid Duplicate Scanning & SMS Spam</strong></td>
+          <td>Processing video at 60 FPS triggered 10+ duplicate scan events per second when a student held a card in front of the lens.</td>
+          <td>Added a <strong>2000ms temporal debounce cooldown</strong> and payload comparison, guaranteeing exactly one attendance entry and SMS dispatch.</td>
+        </tr>
+        <tr>
+          <td><strong>5. Misleading Arrival Reassurance</strong></td>
+          <td>Conventional apps broadcast a generic "Bus reached school" alert, misleading parents of absent children into thinking their ward arrived.</td>
+          <td>Formulated an <strong>automated dual-cohort algorithm</strong>: safely boarded students receive green arrival SMS, while unboarded students trigger an urgent red <em>"Bus Missed"</em> alert.</td>
+        </tr>
+        <tr>
+          <td><strong>6. Zero-Phone Commute Constraint</strong></td>
+          <td>Rural students cannot carry smartphones, and parents have basic 2G feature phones without data packages or app stores.</td>
+          <td>Standardized on <strong>durable laminated 2D QR passes</strong> with sub-second driver scanning and direct cellular GSM SMS delivery requiring zero mobile data.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout" style="margin-top: 30px;">
+      <strong>Conclusion:</strong> Through 12 comprehensive operational modules and a dedicated Zero-Phone Architecture, SchoolRoute TN successfully proves that enterprise-grade commuter safety, real-time tracking, and automated parent communication can be achieved for public school education without burdening rural families with smartphone costs.
+    </div>
+  </div>
+
+</body>
+</html>
+`;
+
+async function generate() {
+  const htmlPath = path.resolve(PROJECT_DIR, 'PROJECT_SCREENSHOTS_WALKTHROUGH.html');
+  const pdfPath = path.resolve(PROJECT_DIR, 'PROJECT_SCREENSHOTS_WALKTHROUGH.pdf');
+
+  console.log('Writing HTML walkthrough to:', htmlPath);
+  fs.writeFileSync(htmlPath, htmlContent, 'utf-8');
+
+  console.log('Launching Puppeteer to compile PDF...');
+  const browser = await puppeteer.launch({
+    executablePath: CHROME_PATH,
+    headless: 'new',
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+
+  const page = await browser.newPage();
+  await page.setViewport({ width: 1200, height: 900 });
+
+  // Navigate to local file
+  const fileUrl = 'file:///' + htmlPath.replace(/\\/g, '/');
+  console.log('Loading document:', fileUrl);
+  await page.goto(fileUrl, { waitUntil: 'networkidle0' });
+
+  // Wait 1.5s for all images to settle
+  await new Promise((r) => setTimeout(r, 1500));
+
+  console.log('Generating PDF:', pdfPath);
+  await page.pdf({
+    path: pdfPath,
+    format: 'A4',
+    printBackground: true,
+    margin: {
+      top: '12mm',
+      bottom: '12mm',
+      left: '12mm',
+      right: '12mm',
+    },
+  });
+
+  await browser.close();
+  console.log('PDF generated successfully at:', pdfPath);
+}
+
+generate().catch((err) => {
+  console.error('PDF generation failed:', err);
+  process.exit(1);
+});

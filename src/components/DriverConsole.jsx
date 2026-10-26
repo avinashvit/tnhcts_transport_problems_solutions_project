@@ -325,10 +325,10 @@ export default function DriverConsole() {
                 </span>
               </div>
               <h3 className="text-base sm:text-lg font-black text-white">
-                Emergency Alert: {myBus.emergencyAlert.category}
+                MoRTH AIS-140 Panic Alarm: {myBus.emergencyAlert.category}
               </h3>
               <p className="text-xs text-red-100 leading-snug">
-                Student commuter pressed the physical pillar SOS button on this bus. Stop vehicle safely at roadside, attend to student commuters, and notify depot.
+                Physical wall-mounted pillar button pressed in passenger cabin. Automated satellite telemetry dispatched to <strong>Police Control Room (Dial 112)</strong> and <strong>TNSTC Depot HQ</strong>. Mandatory crew protocol: <strong>Safely pull over to the road shoulder immediately and inspect passenger cabin.</strong>
               </p>
             </div>
           </div>
@@ -338,7 +338,7 @@ export default function DriverConsole() {
             onClick={() => driverDismissEmergencyAlert(myBus.id)}
             className="neo-btn px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-950 font-black text-xs rounded-xl border-2 border-black shadow-neo shrink-0 cursor-pointer"
           >
-            ✓ Acknowledge & Reset SOS
+            🛑 Acknowledge & Execute Safe Roadside Halt
           </button>
         </div>
       )}

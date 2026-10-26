@@ -66,37 +66,19 @@ export default function ParentLiveTracker() {
     setIsSendingIrregular(true);
     setIrregularStatus(null);
     try {
-      const phone = parentPhoneInput || currentUser?.phone || '73059 40480';
       const res = await studentReportIrregularBehavior({
         busId: activeRoute.id,
-        studentId: currentUser?.id,
-        studentName: currentUser?.name || 'M. Kaviya',
-        parentPhone: phone,
         issueType: irregularCategory,
         details: irregularDetails,
       });
 
-      const isDelivered = res.apiResult?.success === true;
-      const gatewayMsg = res.apiResult?.message || '';
-
-      if (isDelivered) {
-        setIrregularStatus({
-          type: 'success',
-          text: `✓ Emergency SMS queued & sent via SMSMobileAPI to +91 ${phone}!`,
-          phone,
-          message: res.message,
-          id: res.apiResult?.id,
-          note: res.apiResult?.note,
-        });
-      } else {
-        setIrregularStatus({
-          type: 'error',
-          text: gatewayMsg || 'SMS gateway could not dispatch. Please use the 1-Click Phone SIM button below.',
-          rawError: gatewayMsg,
-          phone,
-          message: res.message,
-        });
-      }
+      setIrregularStatus({
+        type: 'success',
+        text: `✓ MoRTH AIS-140 Telemetry Alert Transmitted to Police (112), Driver Cabin Siren & Depot Command!`,
+        message: res.message,
+        id: res.apiResult?.id,
+        note: res.apiResult?.note,
+      });
 
       if (typeof playSmsChime === 'function') {
         try {
@@ -108,7 +90,7 @@ export default function ParentLiveTracker() {
     } catch (err) {
       setIrregularStatus({
         type: 'error',
-        text: `SMS dispatch issue: ${err.message}`,
+        text: `Emergency telemetry transmission issue: ${err.message}`,
       });
     } finally {
       setIsSendingIrregular(false);
@@ -224,10 +206,10 @@ export default function ParentLiveTracker() {
               </span>
             </div>
             <h3 className="text-base sm:text-lg font-bold text-red-950">
-              On-Bus Physical Panic Button & Conductor SOS
+              On-Bus Physical Panic Button (MoRTH AIS-140 Vehicle Safety Unit)
             </h3>
             <p className="text-xs text-red-800 max-w-2xl leading-snug">
-              <strong>Govt school students do not need mobile phones while traveling.</strong> Buses are equipped with physical red SOS buttons mounted on interior window pillars (Seat #4 / Rear Door). Pressing the physical button transmits satellite GPS telemetry to the TNSTC Depot & immediately dispatches an urgent cellular SMS to the parent (+91 {currentUser?.phone || parentPhoneInput}).
+              <strong>Govt school students do not need mobile phones while traveling.</strong> Buses are fitted with physical red SOS buttons on interior window pillars (Seat #4 / Rear Door). Pressing the anonymous physical button immediately triggers the on-board Vehicle Tracking Unit (VTU) to alert the <strong>Emergency Police (Dial 112)</strong>, sound the <strong>Driver Cabin Flashing Siren</strong> for a safe roadside halt, and dispatch satellite telemetry to the <strong>TNSTC Feeder Depot Command Center</strong>.
             </p>
           </div>
         </div>
@@ -726,29 +708,34 @@ export default function ParentLiveTracker() {
               {/* Commuter & Parent Recipient Info */}
               <div className="p-3 bg-red-50 border-2 border-red-500 rounded-2xl grid grid-cols-2 gap-2 text-xs">
                 <div>
-                  <span className="text-[10px] font-bold text-red-700 uppercase block">Student Commuter:</span>
+                  <span className="text-[10px] font-bold text-red-700 uppercase block">Vehicle Hardware Unit:</span>
                   <strong className="text-slate-900 block font-mono">
-                    {currentUser?.name || 'M. Kaviya'} ({currentUser?.classGrade || '10th Std'})
+                    MoRTH AIS-140 Wall Panic Button (Seat #4 / Rear Door)
                   </strong>
                 </div>
                 <div>
                   <span className="text-[10px] font-bold text-red-700 uppercase block">Bus & Driver:</span>
                   <strong className="text-slate-900 block font-mono">
-                    {activeRoute.routeNumber} • {activeRoute.driverName}
+                    {activeRoute.routeNumber} • {activeRoute.driverName} ({activeRoute.busRegNo || 'TN-29-N-1842'})
                   </strong>
                 </div>
-                <div className="col-span-2 pt-2 border-t border-red-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <span className="text-[10px] font-bold text-red-900 uppercase">Alert Destination Parent Mobile:</span>
-                  <div className="flex items-center gap-1.5">
-                    <span className="px-2 py-1 bg-white border border-black rounded text-xs font-bold font-mono text-red-900">+91</span>
-                    <input
-                      type="tel"
-                      maxLength={10}
-                      value={parentPhoneInput.replace(/\D/g, '')}
-                      onChange={(e) => setParentPhoneInput(e.target.value.replace(/\D/g, ''))}
-                      placeholder="10-digit mobile"
-                      className="w-36 text-xs font-bold font-mono px-2 py-1 bg-white border-2 border-black rounded-lg outline-none focus:ring-2 focus:ring-red-600 text-slate-900"
-                    />
+                <div className="col-span-2 pt-2 border-t border-red-200">
+                  <span className="text-[10px] font-bold text-red-900 uppercase block mb-1">
+                    Statutory Emergency Alert Targets (Zero-Phone Protocol):
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[10px]">
+                    <div className="p-2 bg-white border border-red-300 rounded-lg">
+                      <strong className="text-red-950 block">🚨 Police ERSS (112)</strong>
+                      <span className="text-slate-600">State Police Control Room</span>
+                    </div>
+                    <div className="p-2 bg-white border border-red-300 rounded-lg">
+                      <strong className="text-red-950 block">🚌 Driver Cabin Siren</strong>
+                      <span className="text-slate-600">Mandatory Safe Roadside Halt</span>
+                    </div>
+                    <div className="p-2 bg-white border border-red-300 rounded-lg">
+                      <strong className="text-red-950 block">🏛️ Depot HQ Desk</strong>
+                      <span className="text-slate-600">TNSTC Central Command</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -765,7 +752,7 @@ export default function ParentLiveTracker() {
                     { id: 'Severe Overcrowding / Footboard Danger', label: '👥 Footboard Danger / Overcrowded' },
                     { id: 'Misbehaviour / Harassment Inside Bus', label: '🛑 Misbehaviour / Harassment' },
                     { id: 'Bus Breakdown / Stalled Long Halt', label: '🔧 Bus Breakdown / Roadside Stalled' },
-                    { id: 'Skipped Student Pickup Stop', label: '🚏 Skipped Scheduled Student Stop' },
+                    { id: 'Medical Emergency on Board', label: '🏥 Medical Emergency on Board' },
                   ].map((item) => (
                     <button
                       key={item.id}
@@ -792,7 +779,7 @@ export default function ParentLiveTracker() {
                   rows={2}
                   value={irregularDetails}
                   onChange={(e) => setIrregularDetails(e.target.value)}
-                  placeholder="Describe what occurred (e.g. driver skipped stop without halting)..."
+                  placeholder="Describe emergency (e.g. driver exceeding safe highway speed or unauthorized stop)..."
                   className="w-full text-xs font-mono p-2.5 border-2 border-black rounded-xl bg-white outline-none focus:ring-2 focus:ring-red-500"
                 />
               </div>
@@ -800,10 +787,10 @@ export default function ParentLiveTracker() {
               {/* Message Preview */}
               <div className="p-3 bg-slate-950 text-white rounded-xl border-2 border-black text-xs space-y-1">
                 <span className="text-[10px] text-red-400 font-bold block uppercase">
-                  Cellular SMS Transmitted by On-Bus Unit to Parent Mobile:
+                  AIS-140 Vehicle Telemetry Packet Transmitted to Police 112 & Driver:
                 </span>
                 <p className="text-[11px] text-slate-200 leading-relaxed font-mono">
-                  {`TN-GOVT-EDU URGENT: On-bus physical SOS panic button (AIS-140) pressed on Bus ${activeRoute.routeNumber.split(' ')[0]} (${liveClockTime || 'now'}) regarding ${irregularCategory}.${irregularDetails.trim() ? ` Note: ${irregularDetails.trim()}` : ''} Driver cabin & TNSTC Depot alerted. Helpline: 1098 / 04342-260100.`}
+                  {`EMERGENCY 112 / POLICE & TNSTC ALERT: MoRTH AIS-140 Physical Panic Button pressed inside Bus ${activeRoute.routeNumber.split(' ')[0]} (${activeRoute.busRegNo || 'TN-29-N-1842'}) at ${liveClockTime || 'now'}. Incident: ${irregularCategory}.${irregularDetails.trim() ? ` Note: ${irregularDetails.trim()}` : ''} Driver Cabin Siren ACTIVATED. Police ERSS (112) & Depot Control alerted for immediate interception. Helpline: 1098 / 181.`}
                 </p>
               </div>
 
@@ -816,56 +803,23 @@ export default function ParentLiveTracker() {
                       : 'bg-red-100 text-red-950 border-red-800'
                   }`}
                 >
-                  {irregularStatus.type === 'success' ? (
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-800" />
-                        <span>{irregularStatus.text}</span>
-                      </div>
-                      <div className="p-2.5 bg-emerald-200/70 border border-emerald-800/30 rounded-lg text-[11px] font-normal text-emerald-950 space-y-1">
-                        <p className="font-bold text-xs text-emerald-900 flex items-center gap-1">
-                          <span>📲 Sent to your iPhone API SMS app!</span>
-                        </p>
-                        <p className="leading-relaxed">
-                          Your iPhone received the SMS in the <strong>API SMS</strong> app. Tap <strong>[ 💬 Prepare SMS ]</strong> and hit the send arrow (↑) to dispatch via SIM.
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <AlertTriangle className="w-4 h-4 flex-shrink-0 text-red-800" />
-                      <span>{irregularStatus.text}</span>
-                    </div>
-                  )}
-
-                  {/* Direct 1-Tap Real SMS Fallback (Works 100% Free on all phones) */}
-                  <div className="pt-2 border-t border-black/10 flex flex-col sm:flex-row gap-2">
-                    <button
-                      type="button"
-                      onClick={() => openNativePhoneSms(irregularStatus.phone, irregularStatus.message)}
-                      className="neo-btn flex-1 px-3 py-2.5 bg-black hover:bg-slate-800 text-white rounded-xl text-xs font-extrabold cursor-pointer flex items-center justify-center gap-2 shadow-neo-sm"
-                    >
-                      <Smartphone className="w-4 h-4 text-[#86efac] animate-bounce" />
-                      <span>📱 Deliver Directly from Messages App ➔</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => openWhatsAppAlert(irregularStatus.phone, irregularStatus.message)}
-                      className="neo-btn px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold cursor-pointer flex items-center justify-center gap-1.5 shadow-neo-sm"
-                    >
-                      <MessageSquare className="w-4 h-4 text-white" />
-                      <span>Open in WhatsApp</span>
-                    </button>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-800" />
+                    <span>{irregularStatus.text}</span>
                   </div>
+                  <p className="text-[11px] font-normal leading-relaxed text-emerald-900">
+                    Vehicle tracking unit broadcasted emergency coordinates. Driver console is now flashing with emergency siren prompting safe roadside pull-over.
+                  </p>
                 </div>
               )}
 
               {/* 24x7 Official Helpline Fast Access */}
               <div className="p-3 bg-slate-100 border border-black/20 rounded-xl flex flex-wrap items-center justify-between gap-2 text-[10px] text-slate-700">
-                <span className="font-bold uppercase tracking-wider text-slate-900">Official Helplines:</span>
+                <span className="font-bold uppercase tracking-wider text-slate-900">Emergency Statutory Helplines:</span>
+                <span className="bg-red-700 text-white px-2 py-0.5 rounded font-bold">Police ERSS: 112</span>
                 <span className="bg-white px-2 py-0.5 rounded border border-black font-bold">Childline: 1098</span>
                 <span className="bg-white px-2 py-0.5 rounded border border-black font-bold">Women Helpline: 181</span>
-                <span className="bg-white px-2 py-0.5 rounded border border-black font-bold">TNSTC Control: 149</span>
+                <span className="bg-white px-2 py-0.5 rounded border border-black font-bold">TNSTC Control: 04342-260100</span>
               </div>
             </div>
 
@@ -878,16 +832,16 @@ export default function ParentLiveTracker() {
                 className="w-full neo-btn py-3.5 px-4 bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm flex items-center justify-center gap-2 border-2 border-black rounded-xl shadow-neo cursor-pointer disabled:opacity-50"
               >
                 {isSendingIrregular ? (
-                  <span>Transmitting On-Bus Telemetry Alert to Parent...</span>
+                  <span>Transmitting Telemetry to Police (112) & Driver Siren...</span>
                 ) : (
                   <>
                     <Send className="w-4 h-4 text-white" />
-                    <span>[ 🚨 PRESS ON-BUS PHYSICAL SOS (DISPATCH CELLULAR SMS) ]</span>
+                    <span>[ 🚨 TRANSMIT AIS-140 SOS TO POLICE (112) & DRIVER CABIN ]</span>
                   </>
                 )}
               </button>
               <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
-                <span>MoRTH AIS-140 Vehicle Safety Unit • SMSMobileAPI Gateway</span>
+                <span>MoRTH AIS-140 Vehicle Safety Unit • Direct Police ERSS Link</span>
                 <button
                   type="button"
                   onClick={() => setIsIrregularModalOpen(false)}

@@ -37,7 +37,7 @@ export default async function handler(req, res) {
     }
 
     if (!apikey) {
-      apikey = 'a77a44e7ef42e9b6d65b29691c9bd9b8f90e11b128a3aded';
+      apikey = '81aa795413c85723d58385d3fb915672b6397ee9628c49ac';
     }
 
     const forwardParams = new URLSearchParams({

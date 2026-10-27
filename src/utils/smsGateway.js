@@ -55,7 +55,9 @@ export function openWhatsAppAlert(phoneNumber, message) {
   return { success: true, url: waUrl, method: 'whatsapp' };
 }
 
-export const DEFAULT_SMSMOBILEAPI_KEY = 'a77a44e7ef42e9b6d65b29691c9bd9b8f90e11b128a3aded';
+export const DEFAULT_SMSMOBILEAPI_KEY = '81aa795413c85723d58385d3fb915672b6397ee9628c49ac';
+export const SMSMOBILEAPI_ACCOUNT_ID = '72d1b4';
+export const SMSMOBILEAPI_ACCOUNT_LICENCE = '2474548176';
 export const DEFAULT_FAST2SMS_KEY = 'THyxfi7im8e8RvU77rD0CJJmcYvQBKzw9EVybJvIJxyRzsLFzK3XbFKStVwphPITQChS5OgzJzsQPjQo';
 
 /**
@@ -191,6 +193,9 @@ export async function sendLiveCellularSms({ phoneNumber, message, sendWa = 1 }) 
   }
   // Fallback to Fast2SMS
   const fastRes = await sendFast2SmsLive({ phoneNumber, message });
+  if (fastRes.success) {
+    return fastRes;
+  }
   return {
     ...smsMobileRes,
     fast2SmsFallback: fastRes,
